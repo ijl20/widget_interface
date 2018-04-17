@@ -1,13 +1,30 @@
 Proposed better new widget interface
 ====================================
 
-_Version 3_
+_Version 4_
 
-`params_object`
+Data structures
 ---------------
 
-Some methods recieve or return a `params_object`. This is an object supporting JSON seralisation representing the configuration of a particular widget instance but its structure and content is otherwise opaque to the method's caller.
- 
+### `params_object`
+
+Some methods receive or return a `params_object`. This is an object
+supporting JSON serialisation representing the parameters of a
+particular instance of a particular widget. Its structure and content
+is opaque to the method's caller.
+
+### `config_object`
+
+Some methods receive a `config_object`. This is an object containing
+generic configuration information supplied by the method's caller. It
+contains the following keys:
+
+* `container_id`: the id of the DOM object within which
+  the widget or it's configuration page must be displayed.
+  [string, required, commonly based on `widget_id`]
+* `static_url`: URL prefix via which the content of the widget
+  source directory can be accessed. [string, required]
+
 Constructor
 -----------
 
@@ -18,32 +35,26 @@ Constructor
 Methods
 -------
 
-* `display(config, params)` (required)
+* `display(config_object, params_object)` (required)
 
   Display or re-display the widget. This method may take
   responsibility for refreshing the widget in the future,
   otherwise there should be a `refresh()` method that
   does this (see below).
-  
+
   This method may be called more than once on any particular
   widget instance. When called a second and subsequent time the
   method must re-initialise data structures,
   cancel running timers, unsubscribe from external
   subscriptions, etc.
- 
+
   ### Parameters:
 
-  * `config`: configuration information for the widget
-    (object, required):
-      * `container_id`: the id of the DOM object in which the
-        widget must be displayed. [string, required, commonly
-        having the same value as `widget_id`]
-      * `static_url`: URL prefix under which the entire
-        content of the widget source directory can be accessed.
-        [string, required]
-  * `params`: `params_object` containing the configuration for 
-    this widget instance. [required]
-   
+  * `config_object`: the display configuration for the widget
+    [`config_object`, required].
+  * `params_object`: the parameters for this widget instance.
+    [`params_object`, required]
+
   This method has no return value.
 
 * `refresh()` (optional)
@@ -52,7 +63,7 @@ Methods
 
   This method has no return value.
 
-* `obj = configure(config, current_params)` (required)
+* `obj = configure(config_object, current_params_object)` (required)
 
   Render a configuration screen for the widget (initialised
   with current parameters if there are any), collect and validate
@@ -60,31 +71,24 @@ Methods
 
   ### Parameters
 
-    * `config`: configuration information for the configuration
-      screen (object, required):
-        * `config_id`: id of the DOM object in which the widget
-          configuration should be displayed. [string, required,
-          commonly `<widget_id>_config`]
-        * `static_url`: URL prefix under which the entire
-          content of the widget source directory can be accessed.
-          [string, required]
-    * `current_params`: `params_object` containing the
-      current configuration for this widget instance. [required, 
-      pass an empty object when creating a new configuration]
+  * `config_object`: the display configuration for the widget
+    [`config_object`, required].
+  * `currevt_params_object`: the current parameters for the widget instance
+    being edited. [`params_object`, required]
 
   ### Return value
 
   An object containing the following keys:
 
-   * `valid`: a parameterless function which when called 
-      will trigger validation of the curren values and return 
-      `true` if they were valid and `false` if not. If the 
-      function returns `false` then the widget is responsible 
-      for alerting the user to the problems. [boolean,
-      required]
+  * `valid`: a parameterless function which when called
+     will trigger validation of the current values and return
+     `true` if they were valid and `false` if not. If the
+     function returns `false` then the widget should alert
+     the user to the problems. [boolean,
+     required]
   * `value`: a parameterless function which when called returns
-    a `params_object` containing a new or updated 
-    configuration. [required]
+     a `params_object` containing the new or updated
+     configuration. [required]
 
 Other properties
 ----------------
