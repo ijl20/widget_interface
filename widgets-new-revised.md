@@ -73,7 +73,7 @@ Methods
 
   * `config_object`: the display configuration for the widget
     [`config_object`, required].
-  * `currevt_params_object`: the current parameters for the widget instance
+  * `current_params_object`: the current parameters for the widget instance
     being edited. [`params_object`, required]
 
   ### Return value
