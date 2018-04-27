@@ -1,7 +1,7 @@
 Proposed better new widget interface
 ====================================
 
-_Version 4_
+_Version 5_
 
 Data structures
 ---------------
@@ -24,6 +24,16 @@ contains the following keys:
   [string, required, commonly based on `widget_id`]
 * `static_url`: URL prefix via which the content of the widget
   source directory can be accessed. [string, required]
+* `height`: the height in pixels of the area that the widget occupies
+  in the current layout [integer, optional]
+* `width`: the width in pixels of the area that the widget occupies
+  in the current layout [integer, optional]
+* `settings`: an object containing a copy of configuration parameters
+  inherited from the enclosing framework's setup. Only parameters with
+  names starting `SMARTPANEL_` are included [object, required]. Currently
+  use values:
+      * `SMARTPANEL_TRANSPORT_API`: URL base for the TFC transport API
+      * `SMARTPANEL_RT_API`: URL base for the real time bus traffic data
 
 Constructor
 -----------
@@ -89,6 +99,8 @@ Methods
   * `value`: a parameterless function which when called returns
      a `params_object` containing the new or updated
      configuration. [required]
+  * `config`: an object containing the following keys [object, required]:
+      * `title`: a short text description of this configuration [required]
 
 Other properties
 ----------------
